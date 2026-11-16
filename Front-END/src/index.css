@@ -1,0 +1,104 @@
+/* ==========================================================================
+   Nari Craft — global styles
+
+   Import order matters: Tailwind first, then the design-system tokens
+   (theme variables + component primitives), then the motion layer.
+   ========================================================================== */
+
+@import "tailwindcss";
+@import "./styles/tokens.css";
+@import "./styles/motion.css";
+
+@theme {
+  /* ---------------------------------------------------------------
+     Legacy brand names kept so the existing pages keep working.
+     They now point at the design-system tokens, which means every
+     `bg-primary`, `text-accent`, `border-accent` … follows the
+     active theme instead of a hard-coded hex value.
+     --------------------------------------------------------------- */
+  --color-primary: var(--color-surface);
+  --color-accent: var(--color-ink);
+  --color-secoundry: var(--color-aurora-600);
+}
+
+@layer base {
+  html {
+    scroll-padding-top: 6rem;
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+
+  /* The theme swaps the canvas colour; keep the scrollbar in step. */
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-line-strong);
+  }
+}
+
+@layer components {
+  /* Section shell used across the marketing pages. */
+  .nari-section {
+    @apply relative mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Ambient aurora backdrop: two drifting blobs and a slow ring. */
+  .nari-aurora {
+    @apply pointer-events-none absolute inset-0 overflow-hidden;
+  }
+  .nari-aurora .aurora-blob:nth-child(1) {
+    width: 28rem;
+    height: 28rem;
+    top: -8rem;
+    left: -6rem;
+    background: radial-gradient(
+      circle,
+      color-mix(in oklab, var(--color-aurora-500) 55%, transparent),
+      transparent 70%
+    );
+  }
+  .nari-aurora .aurora-blob:nth-child(2) {
+    width: 24rem;
+    height: 24rem;
+    right: -6rem;
+    bottom: -6rem;
+    background: radial-gradient(
+      circle,
+      color-mix(in oklab, var(--color-cyan-glow) 45%, transparent),
+      transparent 70%
+    );
+    animation-delay: -6s;
+  }
+  .nari-aurora .aurora-ring {
+    width: 22rem;
+    height: 22rem;
+    top: 12%;
+    right: 8%;
+    opacity: 0.5;
+  }
+
+  /* Responsive admin tables: a real table on wide screens, cards on small. */
+  @media (max-width: 767px) {
+    .table-shell .nari-table {
+      @apply block w-full;
+    }
+    .table-shell .nari-table thead {
+      @apply hidden;
+    }
+    .table-shell .nari-table tbody,
+    .table-shell .nari-table tr,
+    .table-shell .nari-table td {
+      @apply block w-full;
+    }
+    .table-shell .nari-table tr {
+      @apply mb-3 rounded-lg border border-line bg-surface p-3 shadow-[var(--shadow-e1)];
+    }
+    .table-shell .nari-table td {
+      @apply flex items-center justify-between gap-4 border-0 px-0 py-1.5 text-sm;
+    }
+    .table-shell .nari-table td::before {
+      content: attr(data-label);
+      @apply text-xs font-semibold uppercase tracking-wide text-ink-muted;
+    }
+  }
+}
